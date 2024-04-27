@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns='http://www.springframework.org/schema/beans'
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ 	xmlns:context='http://www.springframework.org/schema/context'
+ 	xmlns:tx='http://www.springframework.org/schema/tx'
+ 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+ 	xsi:schemaLocation=
+ 	'http://www.springframework.org/schema/beans 
+ 	http://www.springframework.org/schema/beans/spring-beans.xsd
+  	http://www.springframework.org/schema/context 
+  	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+  	http://www.springframework.org/schema/tx 
+  	http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+  	http://www.springframework.org/schema/mvc 
+  	http://www.springframework.org/schema/mvc/spring-mvc.xsd'>
+  	
+  	<bean id="student" class="com.model.Student"/>
+	<bean id="staff" class="com.model.Staff"/>
+	<bean id="uploadedfile" class="com.model.UploadedFile"/>
+	<bean id="uploadedvideo" class="com.model.UploadedVideo"/>
+  	<bean id="question" class="com.model.Question"/>
+  	<bean id="answer" class="com.model.Answer"/>
+  	
+	<bean id="studentdao" class="com.dao.StudentDao"/>
+   	<bean id="staffdao" class="com.dao.StaffDao"/>
+   	<bean id="uploadedfiledao" class="com.dao.UploadedFileDao"/>
+   	<bean id="uploadedvideodao" class="com.dao.UploadedVideoDao"/>
+	<bean id="questiondao" class="com.dao.QuestionDao"/>
+	<bean id="answerdao" class="com.dao.AnswerDao"/>
+	
+  	<bean id="mailing" class="com.mail.Mailing"/>
+  	
+<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/view/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+<mvc:resources mapping="/resources/**" location="/resources/"/>		
+
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>	
+
+
+<context:component-scan base-package="com.controller"></context:component-scan>
+
+          <!-- we will manage transactions with annotations -->
+	<tx:annotation-driven />
+ 	<bean id="transactionManager"
+        class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+  
+
+      <!-- we can use annotations -->
+	<context:annotation-config /> 
+ 	<mvc:annotation-driven />
+
+
+     <!-- data source for our database -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+  		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+  		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/elearning" />
+  		<property name="user" value="root" />
+  		<property name="password" value="" />
+  		<property name="maxPoolSize" value="10" />
+  		<property name="maxStatements" value="0" />
+  		<property name="minPoolSize" value="5" />
+ 	</bean>
+	 
+         <!-- configure hibernate session factory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+  		<property name="dataSource" ref="dataSource" />
+  		<property name="annotatedClasses">
+ <list>
+  <value>com.model.Student</value>
+  <value>com.model.Staff</value>
+  <value>com.model.UploadedFile</value>
+  <value>com.model.UploadedVideo</value>
+  <value>com.model.Question</value>
+  <value>com.model.Answer</value>
+ 
+  </list>
+  </property>
+  		
+  		
+  		
+  		
+  		
+  		<property name="hibernateProperties">
+   			<props>
+    			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+    			<prop key="hibernate.show_sql">true</prop>
+    			<prop key="hibernate.hbm2ddl.auto">update</prop>
+   			</props>
+  		</property>
+ 	</bean>
+
+</beans>
